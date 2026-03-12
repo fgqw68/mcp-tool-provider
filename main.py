@@ -269,6 +269,7 @@ async def append_to_knowledge_base(text: str) -> str:
 
 if __name__ == "__main__":
     try:
+        print(f"--- inside main ---")
         # 1. Get port safely
         final_port = int(os.getenv("PORT", 8000))
         print(f"--- DEBUG: Attempting to start on port {final_port} ---")
