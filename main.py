@@ -277,7 +277,6 @@ if __name__ == "__main__":
     # This line runs IMMEDIATELY now
     print(f"📡 Binding to 0.0.0.0:{final_port}")
     mcp.run(
-        transport="sse", 
-        host="0.0.0.0", 
+        transport="sse",         
         port=final_port
     )
