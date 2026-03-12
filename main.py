@@ -6,9 +6,10 @@ from sentence_transformers import SentenceTransformer
 from fastmcp import FastMCP
 from dotenv import load_dotenv
 from docx.shared import Pt
-import os
 import threading # Add this import
 from dotenv import load_dotenv
+import os
+import sys
 
 # Configuration constants
 CHUNK_SIZE = 500
@@ -264,8 +265,7 @@ async def append_to_knowledge_base(text: str) -> str:
         return f"❌ Error updating knowledge base: {str(e)}"
 
 
-import os
-import sys
+
 
 if __name__ == "__main__":
     try:
