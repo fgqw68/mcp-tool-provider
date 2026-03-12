@@ -264,19 +264,29 @@ async def append_to_knowledge_base(text: str) -> str:
         return f"❌ Error updating knowledge base: {str(e)}"
 
 
+import os
+import sys
+
 if __name__ == "__main__":
-    final_port =   int(os.getenv("PORT", 9006))
+    try:
+        # 1. Get port safely
+        final_port = int(os.getenv("PORT", 8000))
+        print(f"--- DEBUG: Attempting to start on port {final_port} ---")
 
-    print("🚀 Starting MCP server process...")
+        # 2. COMMENT THIS OUT temporarily to test Render connectivity
+        # print("Indexing document...")
+        # index_document() 
 
-    # Start indexing in a SEPARATE thread so it doesn't block the server
-    print("Background indexing started...")
-    indexing_thread = threading.Thread(target=index_document)
-    indexing_thread.start()
+        print(f"--- DEBUG: Reached mcp.run() ---")
+        
+        # 3. Use the most basic run command possible
+        mcp.run(
+            transport="sse", 
+            host="0.0.0.0", 
+            port=final_port
+        )
 
-    # This line runs IMMEDIATELY now
-    print(f"📡 Binding to 0.0.0.0:{final_port}")
-    mcp.run(
-        transport="sse",         
-        port=final_port
-    )
+    except Exception as e:
+        print(f"--- CRITICAL ERROR DURING STARTUP ---")
+        print(str(e))
+        sys.exit(1)
