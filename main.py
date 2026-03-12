@@ -6,6 +6,7 @@ from sentence_transformers import SentenceTransformer
 from fastmcp import FastMCP
 from dotenv import load_dotenv
 from docx.shared import Pt
+import os
 
 # Configuration constants
 CHUNK_SIZE = 500
@@ -261,11 +262,15 @@ async def append_to_knowledge_base(text: str) -> str:
 
 
 if __name__ == "__main__":
-    print("Initializing Sentinel-Knowledge-Base MCP server...")
-   
+    # 1. Use Render's assigned port, fallback to your local MCP_PORT
+    # Render automatically sets the 'PORT' environment variable
+    final_port = int(os.environ.get("PORT", MCP_PORT))
 
-    # Index on startup
+    print("Initializing Sentinel-Knowledge-Base MCP server...")
+    
+    # 2. Re-index on startup (Ensure index_document is NOT awaited if it's 'def')
     index_document()
 
-    print(f"\nStarting MCP server on SSE transport (port {MCP_PORT})...")
-    mcp.run(transport="sse", port=MCP_PORT)
+    # 3. Bind to 0.0.0.0 - This is the most critical change for Render!
+    print(f"\nStarting MCP server on SSE transport (port {final_port})...")
+    mcp.run(transport="sse", host="0.0.0.0", port=final_port)
