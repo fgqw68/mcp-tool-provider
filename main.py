@@ -269,7 +269,7 @@ if __name__ == "__main__":
     print("Initializing Sentinel-Knowledge-Base MCP server...")
     
     # 2. Re-index on startup (Ensure index_document is NOT awaited if it's 'def')
-    index_document()
+    #index_document()
 
     # 3. Bind to 0.0.0.0 - This is the most critical change for Render!
     print(f"\nStarting MCP server on SSE transport (port {final_port})...")
