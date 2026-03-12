@@ -7,15 +7,18 @@ from fastmcp import FastMCP
 from dotenv import load_dotenv
 from docx.shared import Pt
 import os
+import threading # Add this import
+from dotenv import load_dotenv
 
 # Configuration constants
 CHUNK_SIZE = 500
 CHUNK_OVERLAP = 50
 SIMILARITY_THRESHOLD = 0.3
 TOP_K_RESULTS = 2
-MCP_PORT = 8001
 
 
+# This loads the variables from your .env file into os.environ
+load_dotenv()
 # Global state
 mcp = FastMCP("Sentinel-Knowledge-Base")
 
@@ -262,15 +265,19 @@ async def append_to_knowledge_base(text: str) -> str:
 
 
 if __name__ == "__main__":
-    # 1. Use Render's assigned port, fallback to your local MCP_PORT
-    # Render automatically sets the 'PORT' environment variable
-    final_port = int(os.environ.get("PORT", MCP_PORT))
+    final_port =   int(os.getenv("PORT", 9006))
 
-    print("Initializing Sentinel-Knowledge-Base MCP server...")
-    
-    # 2. Re-index on startup (Ensure index_document is NOT awaited if it's 'def')
-    #index_document()
+    print("🚀 Starting MCP server process...")
 
-    # 3. Bind to 0.0.0.0 - This is the most critical change for Render!
-    print(f"\nStarting MCP server on SSE transport (port {final_port})...")
-    mcp.run(transport="sse", host="0.0.0.0", port=final_port)
+    # Start indexing in a SEPARATE thread so it doesn't block the server
+    print("Background indexing started...")
+    indexing_thread = threading.Thread(target=index_document)
+    indexing_thread.start()
+
+    # This line runs IMMEDIATELY now
+    print(f"📡 Binding to 0.0.0.0:{final_port}")
+    mcp.run(
+        transport="sse", 
+        host="0.0.0.0", 
+        port=final_port
+    )

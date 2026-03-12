@@ -3,3 +3,4 @@ sentence_transformers
 fastmcp
 python-docx
 dotenv
+python-dotenv
