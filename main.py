@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 import os
 import sys
 
+print(f"--- DEBUG: start of execution ---")
 # Configuration constants
 CHUNK_SIZE = 500
 CHUNK_OVERLAP = 50
