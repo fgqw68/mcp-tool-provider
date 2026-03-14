@@ -1,6 +1,3 @@
-numpy
-sentence_transformers
-fastmcp
-python-docx
-dotenv
+mcp
 python-dotenv
+
