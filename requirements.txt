@@ -1,3 +1,6 @@
 mcp
 python-dotenv
-
+uvicorn
+numpy
+python-docx
+sentence-transformers
