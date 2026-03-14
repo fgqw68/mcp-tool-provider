@@ -288,9 +288,12 @@ if __name__ == "__main__":
 
         print(f"Starting server on {host}:{port}")
 
-        # Get the SSE app and run with uvicorn
-        app = mcp.sse_app()
-        uvicorn.run(app, host=host, port=port)
+        # Use Streamable HTTP transport (more proxy-friendly than SSE)
+        app = mcp.http_app()
+        uvicorn.run(app, host=host, port=port,
+                    proxy_headers=True,
+                    forwarded_allow_ips="*")
+        
 
     except Exception as e:
         print(f"--- CRITICAL ERROR DURING STARTUP ---")
