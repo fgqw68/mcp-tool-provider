@@ -13,8 +13,13 @@ mcp = FastMCP("Sentinel-Knowledge-Base")
 if __name__ == "__main__":
     try:
         print(f"--- inside main ---")
-   
-        mcp.run(transport='sse')
+
+        # Use PORT from environment (Render sets this), default to 8000
+        port = int(os.environ.get("PORT", 8000))
+        host = "0.0.0.0"  # Bind to all interfaces for Render
+
+        print(f"Starting server on {host}:{port}")
+        mcp.run(transport='sse', host=host, port=port)
 
     except Exception as e:
         print(f"--- CRITICAL ERROR DURING STARTUP ---")
