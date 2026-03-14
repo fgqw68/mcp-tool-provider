@@ -21,19 +21,27 @@ load_dotenv()
 # Global state
 mcp = FastMCP("Sentinel-Knowledge-Base")
 
-# Initialize SentenceTransformer model at startup
+# Initialize SentenceTransformer model (lazy loading - only when needed)
 model: SentenceTransformer = None
-
-# Load the model
-print("Loading SentenceTransformer model...")
-model = SentenceTransformer('all-MiniLM-L6-v2')
-print("Model loaded successfully")
 
 # Global storage for chunks and embeddings
 chunks: List[str] = []
 embeddings: np.ndarray = np.array([])
 
 KNOWLEDGE_BASE_PATH = "knowledge_base.docx"
+
+
+def get_model() -> SentenceTransformer:
+    """
+    Lazy load the SentenceTransformer model.
+    Only loads when first needed to save startup time and resources.
+    """
+    global model
+    if model is None:
+        print("Loading SentenceTransformer model...")
+        model = SentenceTransformer('all-MiniLM-L6-v2')
+        print("Model loaded successfully")
+    return model
 
 
 def chunk_text(text: str, size: int = CHUNK_SIZE, overlap: int = CHUNK_OVERLAP) -> List[str]:
@@ -154,7 +162,7 @@ def index_document() -> None:
         new_chunks = chunk_text(full_text, size=CHUNK_SIZE, overlap=CHUNK_OVERLAP)
 
         # Generate embeddings for all chunks
-        new_embeddings = model.encode(
+        new_embeddings = get_model().encode(
             new_chunks,
             convert_to_numpy=True,
             show_progress_bar=True
@@ -198,7 +206,7 @@ def search_knowledge_base(query: str) -> str:
         return "I don't have any knowledge base data yet. Please add content first."
 
     # Generate embedding for the query
-    query_embedding = model.encode([query], convert_to_numpy=True)[0]
+    query_embedding = get_model().encode([query], convert_to_numpy=True)[0]
 
     # Compute similarities using NumPy-based cosine similarity
     similarities = compute_similarities(query_embedding)
