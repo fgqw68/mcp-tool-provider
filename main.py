@@ -284,16 +284,11 @@ if __name__ == "__main__":
 
         # Use PORT from environment (Render sets this), default to 8000
         port = int(os.environ.get("PORT", 8000))
-        host = "0.0.0.0"  # Bind to all interfaces for Render
 
-        print(f"Starting server on {host}:{port}")
+        print(f"Starting server on port {port}")
 
-        # Use Streamable HTTP transport (more proxy-friendly than SSE)
-        app = mcp.http_app()
-        uvicorn.run(app, host=host, port=port,
-                    proxy_headers=True,
-                    forwarded_allow_ips="*")
-        
+        # Use SSE transport with port configuration
+        mcp.run(transport="sse")
 
     except Exception as e:
         print(f"--- CRITICAL ERROR DURING STARTUP ---")
