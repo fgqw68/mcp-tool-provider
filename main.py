@@ -1,5 +1,6 @@
 import os
 from mcp.server.fastmcp import FastMCP
+from dotenv import load_dotenv
 
 
 print(f"--- DEBUG: start of execution ---")
